@@ -1,0 +1,19 @@
+{
+  "name": "portafolio-juan",
+  "version": "1.0.0",
+  "description": "Portafolio personal editable con Node.js, Express, JavaScript vanilla y TailwindCSS.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./public/input.css -o ./public/output.css --minify",
+    "watch:css": "tailwindcss -i ./public/input.css -o ./public/output.css --watch",
+    "start": "npm run build:css && node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
