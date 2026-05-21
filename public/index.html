@@ -4,30 +4,71 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portafolio Juan</title>
-    <link rel="stylesheet" href="/output.css" />
+    <link rel="stylesheet" href="./output.css" />
   </head>
-  <body class="bg-slate-100 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+  <body
+    class="bg-slate-100 text-slate-900 transition-colors duration-300 dark:bg-[#050812] dark:text-white"
+  >
     <canvas id="animatedBackground" class="fixed inset-0 -z-10"></canvas>
 
-    <header class="sticky top-0 z-40 border-b border-slate-300 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
-      <nav class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
-        <a href="#inicio" class="flex items-center gap-3 font-bold transition hover:scale-105">
-          <span id="navAvatar" class="grid h-10 w-10 place-items-center rounded-full bg-emerald-500 text-lg font-black text-slate-950 shadow-lg shadow-emerald-500/30">J</span>
+    <header
+      class="sticky top-0 z-40 border-b border-slate-300 bg-white/90 backdrop-blur dark:border-white/10 dark:bg-[#050812]/80"
+    >
+      <nav
+        class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4"
+      >
+        <a
+          href="#inicio"
+          class="flex items-center gap-3 font-bold transition hover:scale-105"
+        >
+          <span
+            id="navAvatar"
+            class="grid h-10 w-10 place-items-center rounded-full bg-emerald-500 text-lg font-black text-slate-950 shadow-lg shadow-emerald-500/30"
+            >J</span
+          >
           <span id="navName">Juan</span>
         </a>
 
-        <div class="hidden gap-5 text-sm font-semibold text-slate-600 dark:text-slate-300 md:flex">
-          <a href="#sobre-mi" class="transition hover:-translate-y-1 hover:text-emerald-500">Sobre mi</a>
-          <a href="#habilidades" class="transition hover:-translate-y-1 hover:text-emerald-500">Habilidades</a>
-          <a href="#proyectos" class="transition hover:-translate-y-1 hover:text-emerald-500">Proyectos</a>
-          <a href="#contacto" class="transition hover:-translate-y-1 hover:text-emerald-500">Contacto</a>
+        <div
+          class="hidden gap-5 text-sm font-semibold text-slate-600 dark:text-slate-300 md:flex"
+        >
+          <a
+            id="navAboutLink"
+            href="#sobre-mi"
+            class="transition hover:-translate-y-1 hover:text-emerald-500"
+            >Sobre mi</a
+          >
+          <a
+            id="navSkillsLink"
+            href="#habilidades"
+            class="transition hover:-translate-y-1 hover:text-emerald-500"
+            >Habilidades</a
+          >
+          <a
+            id="navProjectsLink"
+            href="#proyectos"
+            class="transition hover:-translate-y-1 hover:text-emerald-500"
+            >Proyectos</a
+          >
+          <a
+            id="navContactLink"
+            href="#contacto"
+            class="transition hover:-translate-y-1 hover:text-emerald-500"
+            >Contacto</a
+          >
         </div>
 
         <div class="flex items-center gap-2">
-          <button id="themeButton" class="rounded-full border border-slate-300 px-3 py-2 text-sm font-bold transition hover:-translate-y-1 hover:border-emerald-500 dark:border-slate-700">
+          <button
+            id="themeButton"
+            class="rounded-full border border-slate-300 px-3 py-2 text-sm font-bold transition hover:-translate-y-1 hover:border-emerald-500 dark:border-slate-700"
+          >
             Tema
           </button>
-          <button id="editButton" class="rounded-full bg-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-400">
+          <button
+            id="editButton"
+            class="rounded-full bg-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-400"
+          >
             Editar
           </button>
         </div>
@@ -35,153 +76,318 @@
     </header>
 
     <main>
-      <section id="inicio" class="mx-auto grid min-h-[90vh] max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2">
+      <section
+        id="inicio"
+        class="relative mx-auto grid min-h-[90vh] max-w-6xl items-center gap-10 overflow-hidden px-4 py-16 md:grid-cols-[1.05fr_.95fr]"
+      >
         <div class="space-y-6 animate-fadeUp">
-          <p class="inline-block rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-bold text-emerald-600 shadow-lg shadow-emerald-500/10 dark:text-emerald-400">
+          <p
+            id="heroEyebrow"
+            class="inline-block rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-bold text-emerald-600 shadow-lg shadow-emerald-500/10 dark:text-emerald-400"
+          >
             Disponible para crear, aprender y mejorar
           </p>
-          <h1 class="text-5xl font-black leading-tight md:text-7xl">
+          <h1 class="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
             Hola, soy <span id="heroName" class="text-emerald-500">Juan</span>.
           </h1>
-          <p id="heroRole" class="text-xl font-bold text-slate-700 dark:text-slate-300">Desarrollador en formación</p>
-          <p id="heroIntro" class="text-lg leading-8 text-slate-600 dark:text-slate-400"></p>
+          <p
+            id="heroRole"
+            class="text-xl font-bold text-slate-700 dark:text-slate-300"
+          >
+            Desarrollador en formación
+          </p>
+          <p
+            id="heroIntro"
+            class="text-lg leading-8 text-slate-600 dark:text-slate-400"
+          ></p>
           <div class="flex flex-col gap-3 sm:flex-row">
-            <a href="#proyectos" class="rounded-full bg-emerald-500 px-6 py-3 text-center font-bold text-slate-950 transition hover:scale-105 hover:bg-emerald-400">Ver proyectos</a>
-            <a href="#contacto" class="rounded-full border border-slate-400 px-6 py-3 text-center font-bold transition hover:scale-105 dark:border-slate-700">Contactarme</a>
+            <a
+              id="primaryCta"
+              href="#proyectos"
+              class="rounded-full bg-emerald-500 px-6 py-3 text-center font-bold text-slate-950 transition hover:scale-105 hover:bg-emerald-400"
+              >Ver proyectos</a
+            >
+            <a
+              id="secondaryCta"
+              href="#contacto"
+              class="rounded-full border border-slate-400 px-6 py-3 text-center font-bold transition hover:scale-105 dark:border-slate-700"
+              >Contactarme</a
+            >
           </div>
+          <div id="profileEditor" class="editSurface"></div>
         </div>
 
-        <div id="heroCard" class="relative rounded-3xl border border-slate-300 bg-white p-6 shadow-2xl shadow-emerald-500/20 transition dark:border-emerald-500/20 dark:bg-slate-900">
-          <div class="absolute -inset-1 -z-10 rounded-3xl bg-emerald-500/20 blur-2xl"></div>
-          <div class="grid place-items-center rounded-3xl bg-slate-900 p-8 text-white dark:bg-slate-800/90">
-            <div id="heroAvatar" class="grid h-36 w-36 animate-pulseSoft place-items-center rounded-full bg-emerald-500 text-6xl font-black text-slate-950 shadow-2xl shadow-emerald-500/30">J</div>
-            <div id="statsList" class="mt-8 grid w-full gap-3"></div>
+        <div
+          id="heroCard"
+          class="relative rounded-[2rem] border border-slate-300 bg-white p-3 shadow-2xl shadow-emerald-500/20 transition dark:border-white/10 dark:bg-white/10"
+        >
+          <div
+            class="absolute -inset-6 -z-10 rounded-[2.5rem] bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,.55),transparent_36%),radial-gradient(circle_at_90%_70%,rgba(14,165,233,.36),transparent_34%)] blur-2xl"
+          ></div>
+          <div
+            class="relative overflow-hidden rounded-[1.6rem] bg-slate-950 text-white"
+          >
+            <img
+              id="heroImage"
+              class="h-[460px] w-full object-cover opacity-80"
+              src="./img/hero-workspace.jpg"
+              alt="Espacio de trabajo de desarrollo"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"
+            ></div>
+            <div
+              class="absolute left-5 top-5 flex items-center gap-3 rounded-2xl border border-white/15 bg-slate-950/70 p-3 backdrop-blur"
+            >
+              <div
+                id="heroAvatar"
+                class="grid h-14 w-14 animate-pulseSoft place-items-center rounded-2xl bg-emerald-500 text-2xl font-black text-slate-950 shadow-2xl shadow-emerald-500/30"
+              >
+                J
+              </div>
+            </div>
+            <div
+              id="statsList"
+              class="absolute inset-x-5 bottom-5 grid gap-3 sm:grid-cols-3"
+            ></div>
           </div>
         </div>
       </section>
 
-      <section id="sobre-mi" class="reveal border-y border-slate-300 bg-white py-16 opacity-0 translate-y-8 transition-all duration-700 dark:border-slate-800 dark:bg-slate-900">
+      <section
+        id="sobre-mi"
+        class="reveal border-y border-slate-300 bg-white py-16 opacity-0 translate-y-8 transition-all duration-700 dark:border-slate-800 dark:bg-slate-900"
+      >
         <div class="mx-auto max-w-6xl px-4">
           <div class="max-w-3xl">
-            <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Sobre mi</p>
-            <h2 class="mt-3 text-4xl font-black leading-tight md:text-5xl">Lo que soy y hacia dónde voy</h2>
+            <p
+              id="aboutEyebrow"
+              class="text-sm font-black uppercase tracking-widest text-emerald-500"
+            >
+              Sobre mi
+            </p>
+            <h2
+              id="aboutTitle"
+              class="mt-3 text-4xl font-black leading-tight md:text-5xl"
+            >
+              Quien soy?
+            </h2>
           </div>
 
           <div class="mt-8 grid gap-5 lg:grid-cols-3">
-            <article class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-2">
-              <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Presentación</p>
-              <p id="aboutIntro" class="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300"></p>
+            <article
+              class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-2"
+            >
+              <p
+                id="aboutIntroLabel"
+                class="text-sm font-black uppercase tracking-widest text-emerald-500"
+              >
+                Presentación
+              </p>
+              <p
+                id="aboutIntro"
+                class="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300"
+              ></p>
             </article>
 
-            <article class="rounded-3xl border border-emerald-500/30 bg-emerald-500 p-6 text-slate-950 shadow-xl shadow-emerald-500/20 transition hover:-translate-y-1">
-              <p class="text-sm font-black uppercase tracking-widest">Enfoque</p>
+            <article
+              class="rounded-3xl border border-emerald-500/30 bg-emerald-500 p-6 text-slate-950 shadow-xl shadow-emerald-500/20 transition hover:-translate-y-1"
+            >
+              <p
+                id="aboutGoalLabel"
+                class="text-sm font-black uppercase tracking-widest"
+              >
+                Enfoque
+              </p>
               <p id="aboutGoal" class="mt-4 text-lg font-bold leading-8"></p>
             </article>
 
-            <article class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950">
-              <p class="text-sm font-black uppercase tracking-widest text-emerald-500">¿Qué hago?</p>
+            <article
+              class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950"
+            >
+              <p
+                id="aboutWorkLabel"
+                class="text-sm font-black uppercase tracking-widest text-emerald-500"
+              >
+                ¿Qué hago?
+              </p>
               <div id="aboutWorkList" class="mt-4 grid gap-3"></div>
             </article>
 
-            <article class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-2">
-              <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Tecnologías</p>
+            <article
+              class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-2"
+            >
+              <p
+                id="aboutTechLabel"
+                class="text-sm font-black uppercase tracking-widest text-emerald-500"
+              >
+                Tecnologías
+              </p>
               <div id="aboutTechList" class="mt-4 flex flex-wrap gap-3"></div>
             </article>
 
-            <article class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-3">
-              <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Mi camino</p>
-              <p id="aboutStory" class="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300"></p>
+            <article
+              class="rounded-3xl border border-slate-300 bg-slate-100 p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950 lg:col-span-3"
+            >
+              <p
+                id="aboutStoryLabel"
+                class="text-sm font-black uppercase tracking-widest text-emerald-500"
+              >
+                Mi camino
+              </p>
+              <p
+                id="aboutStory"
+                class="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300"
+              ></p>
             </article>
           </div>
+          <div id="aboutEditor" class="editSurface"></div>
         </div>
       </section>
 
-      <section id="habilidades" class="reveal mx-auto max-w-6xl px-4 py-16 opacity-0 translate-y-8 transition-all duration-700">
-        <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Habilidades</p>
-        <h2 class="mt-2 text-4xl font-black">Herramientas que uso</h2>
+      <section
+        id="habilidades"
+        class="reveal mx-auto max-w-6xl px-4 py-16 opacity-0 translate-y-8 transition-all duration-700"
+      >
+        <p
+          id="skillsEyebrow"
+          class="text-sm font-black uppercase tracking-widest text-emerald-500"
+        >
+          Habilidades
+        </p>
+        <h2 id="skillsTitle" class="mt-2 text-4xl font-black">
+          Herramientas que uso
+        </h2>
         <div id="skillsList" class="mt-8 flex flex-wrap gap-3"></div>
+        <div id="skillsEditor" class="editSurface"></div>
 
-        <div class="mt-12 rounded-2xl border border-slate-300 bg-white p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-900">
-          <h3 class="text-2xl font-black">Estoy aprendiendo</h3>
+        <div
+          class="mt-12 rounded-2xl border border-slate-300 bg-white p-6 shadow-xl shadow-black/5 transition hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-900"
+        >
+          <h3 id="learningTitle" class="text-2xl font-black">
+            Estoy aprendiendo
+          </h3>
           <div id="learningList" class="mt-5 grid gap-3"></div>
+          <div id="learningEditor" class="editSurface"></div>
         </div>
       </section>
 
-      <section id="proyectos" class="reveal border-y border-slate-300 bg-white py-16 opacity-0 translate-y-8 transition-all duration-700 dark:border-slate-800 dark:bg-slate-900">
+      <section
+        id="proyectos"
+        class="reveal border-y border-slate-300 bg-white py-16 opacity-0 translate-y-8 transition-all duration-700 dark:border-slate-800 dark:bg-slate-900"
+      >
         <div class="mx-auto max-w-6xl px-4">
-          <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Proyectos</p>
-          <h2 class="mt-2 text-4xl font-black">Trabajos en proceso y terminados</h2>
+          <p
+            id="projectsEyebrow"
+            class="text-sm font-black uppercase tracking-widest text-emerald-500"
+          >
+            Proyectos
+          </p>
+          <h2 id="projectsTitle" class="mt-2 text-4xl font-black">
+            Trabajos en proceso y terminados
+          </h2>
 
-          <div class="mt-8 flex rounded-full border border-slate-300 p-1 dark:border-slate-700 sm:w-max">
-            <button class="tabButton rounded-full bg-emerald-500 px-5 py-2 font-bold text-slate-950 transition" data-tab="progress">En proceso</button>
-            <button class="tabButton rounded-full px-5 py-2 font-bold transition" data-tab="done">Terminados</button>
+          <div
+            class="mt-8 flex rounded-full border border-slate-300 p-1 dark:border-slate-700 sm:w-max"
+          >
+            <button
+              id="progressTab"
+              class="tabButton rounded-full bg-emerald-500 px-5 py-2 font-bold text-slate-950 transition"
+              data-tab="progress"
+            >
+              En proceso
+            </button>
+            <button
+              id="doneTab"
+              class="tabButton rounded-full px-5 py-2 font-bold transition"
+              data-tab="done"
+            >
+              Terminados
+            </button>
           </div>
+          <div id="projectsEditor" class="editSurface"></div>
 
           <div id="projectsGrid" class="mt-8 grid gap-5 md:grid-cols-2"></div>
         </div>
       </section>
 
-      <section id="contacto" class="reveal mx-auto max-w-6xl px-4 py-16 opacity-0 translate-y-8 transition-all duration-700">
-        <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Contacto</p>
-        <h2 class="mt-2 text-4xl font-black">Hablemos de la próxima idea</h2>
+      <section
+        id="contacto"
+        class="reveal mx-auto max-w-6xl px-4 py-16 opacity-0 translate-y-8 transition-all duration-700"
+      >
+        <p
+          id="contactEyebrow"
+          class="text-sm font-black uppercase tracking-widest text-emerald-500"
+        >
+          Contacto
+        </p>
+        <h2 id="contactTitle" class="mt-2 text-4xl font-black">
+          Hablemos de la próxima idea
+        </h2>
         <div id="contactCards" class="mt-8 grid gap-4 md:grid-cols-2"></div>
+        <div id="contactEditor" class="editSurface"></div>
       </section>
     </main>
 
-    <footer class="border-t border-slate-300 px-4 py-8 text-center text-sm font-semibold text-slate-500 dark:border-slate-800 dark:text-slate-400">
+    <footer
+      id="footerText"
+      class="border-t border-slate-300 px-4 py-8 text-center text-sm font-semibold text-slate-500 dark:border-slate-800 dark:text-slate-400"
+    >
       Hecho con Node.js, Express, JavaScript vanilla y TailwindCSS.
     </footer>
 
-    <div id="saveToast" class="fixed bottom-5 left-5 z-50 hidden -translate-x-6 translate-y-4 rounded-2xl border border-emerald-500/40 bg-slate-950 px-5 py-4 font-bold text-emerald-400 opacity-0 shadow-2xl shadow-emerald-500/20 transition-all duration-300">
+    <div
+      id="saveToast"
+      class="fixed bottom-5 left-5 z-50 hidden -translate-x-6 translate-y-4 rounded-2xl border border-emerald-500/40 bg-slate-950 px-5 py-4 font-bold text-emerald-400 opacity-0 shadow-2xl shadow-emerald-500/20 transition-all duration-300"
+    >
       Cambios realizados
     </div>
 
-    <div id="editorModal" class="fixed inset-0 z-50 hidden place-items-center bg-black/70 p-4">
-      <div class="animate-modalIn max-h-[90vh] w-full max-w-3xl overflow-auto rounded-2xl bg-white p-5 text-slate-900 shadow-2xl dark:bg-slate-900 dark:text-white">
+    <div
+      id="editorModal"
+      class="fixed inset-0 z-50 hidden place-items-center bg-black/70 p-4"
+    >
+      <div
+        class="animate-modalIn max-h-[90vh] w-full max-w-3xl overflow-auto rounded-2xl bg-white p-5 text-slate-900 shadow-2xl dark:bg-slate-900 dark:text-white"
+      >
         <div class="flex items-start justify-between gap-4">
           <div>
-            <p class="text-sm font-black uppercase tracking-widest text-emerald-500">Editor privado</p>
+            <p
+              class="text-sm font-black uppercase tracking-widest text-emerald-500"
+            >
+              Editor privado
+            </p>
             <h2 class="text-2xl font-black">Actualizar portafolio</h2>
           </div>
-          <button id="closeEditor" class="rounded-full border border-slate-300 px-3 py-1 font-black dark:border-slate-700">x</button>
+          <button
+            id="closeEditor"
+            class="rounded-full border border-slate-300 px-3 py-1 font-black dark:border-slate-700"
+          >
+            x
+          </button>
         </div>
 
         <form id="loginForm" class="mt-6">
           <label class="font-bold">Contraseña</label>
           <div class="mt-2 flex gap-2">
-            <input id="passwordInput" class="w-full rounded-xl border border-slate-300 bg-slate-100 p-3 outline-none dark:border-slate-700 dark:bg-slate-800" type="password" placeholder="Ingresa la contraseña" />
-            <button class="rounded-xl bg-emerald-500 px-5 font-bold text-slate-950" type="submit">Entrar</button>
+            <input
+              id="passwordInput"
+              class="w-full rounded-xl border border-slate-300 bg-slate-100 p-3 outline-none dark:border-slate-700 dark:bg-slate-800"
+              type="password"
+              placeholder="Ingresa la contraseña"
+            />
+            <button
+              class="rounded-xl bg-emerald-500 px-5 font-bold text-slate-950"
+              type="submit"
+            >
+              Entrar
+            </button>
           </div>
           <p id="loginMessage" class="mt-3 text-sm font-bold text-red-500"></p>
-        </form>
-
-        <form id="editForm" class="mt-6 hidden space-y-4">
-          <div class="grid gap-4 md:grid-cols-2">
-            <label class="grid gap-2 font-bold">Nombre<input class="inputEdit" name="name" /></label>
-            <label class="grid gap-2 font-bold">Rol<input class="inputEdit" name="role" /></label>
-            <label class="grid gap-2 font-bold">Avatar<input class="inputEdit" name="avatar" maxlength="2" /></label>
-            <label class="grid gap-2 font-bold">Email<input class="inputEdit" name="email" /></label>
-          </div>
-          <label class="grid gap-2 font-bold">Introducción<textarea class="inputEdit min-h-24" name="intro"></textarea></label>
-          <label class="grid gap-2 font-bold">Sobre mi<textarea class="inputEdit min-h-24" name="about"></textarea></label>
-          <label class="grid gap-2 font-bold">Habilidades separadas por coma<textarea class="inputEdit min-h-24" name="skills"></textarea></label>
-          <label class="grid gap-2 font-bold">Estoy aprendiendo, una por línea<textarea class="inputEdit min-h-24" name="learning"></textarea></label>
-          <label class="grid gap-2 font-bold">Proyectos en proceso, uno por línea<textarea class="inputEdit min-h-32" name="projectsInProgress"></textarea></label>
-          <label class="grid gap-2 font-bold">Proyectos terminados, uno por línea<textarea class="inputEdit min-h-32" name="projectsDone"></textarea></label>
-          <label class="grid gap-2 font-bold">Links de proyectos terminados, uno por línea<textarea class="inputEdit min-h-24" name="doneLinks" placeholder="https://mi-proyecto.com"></textarea></label>
-          <div class="grid gap-4 md:grid-cols-2">
-            <label class="grid gap-2 font-bold">Teléfono<input class="inputEdit" name="phone" /></label>
-            <label class="grid gap-2 font-bold">GitHub<input class="inputEdit" name="github" /></label>
-            <label class="grid gap-2 font-bold">LinkedIn<input class="inputEdit" name="linkedin" /></label>
-            <label class="grid gap-2 font-bold">WhatsApp<input class="inputEdit" name="whatsapp" /></label>
-          </div>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Formato de proyectos: titulo | descripcion | tecnologias. Los links de proyectos terminados van en el campo de links.</p>
-          <button class="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-slate-950" type="submit">Guardar cambios</button>
-          <p id="saveMessage" class="text-sm font-bold"></p>
         </form>
       </div>
     </div>
 
-    <script type="module" src="/app.js"></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>
