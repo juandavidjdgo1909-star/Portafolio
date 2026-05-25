@@ -8,6 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const adminPassword = process.env.ADMIN_PASSWORD || '65771344';
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL;
 const portfolioSlug = 'main';
 const editTokens = new Set();
 let databaseError = '';
@@ -51,15 +52,16 @@ function getDatabaseStatus() {
   return {
     connected: isDatabaseReady(),
     state: states[mongoose.connection.readyState] || 'unknown',
-    hasUri: Boolean(process.env.MONGODB_URI),
+    hasUri: Boolean(mongoUri),
+    acceptedEnvVars: ['MONGODB_URI', 'MONGO_URI', 'DATABASE_URL'],
     dbName: process.env.MONGODB_DB || 'portafolio',
     error: databaseError || null
   };
 }
 
 function connectDatabase() {
-  if (!process.env.MONGODB_URI) {
-    databaseError = 'MONGODB_URI no está configurada en las variables de entorno.';
+  if (!mongoUri) {
+    databaseError = 'No hay URI de MongoDB. Configura MONGODB_URI en las variables de entorno del hosting.';
     console.warn(databaseError);
     return Promise.resolve(false);
   }
@@ -75,7 +77,7 @@ function connectDatabase() {
 
   databaseError = 'Conectando con MongoDB Atlas...';
   databaseConnectionPromise = mongoose
-    .connect(process.env.MONGODB_URI, {
+    .connect(mongoUri, {
       dbName: process.env.MONGODB_DB || 'portafolio',
       serverSelectionTimeoutMS: 10000
     })
