@@ -1,8 +1,8 @@
-const password = '65771344';
 const storageKey = 'portafolioJuan';
 const backgroundCanvas = document.querySelector('#animatedBackground');
 const backgroundContext = backgroundCanvas.getContext('2d');
 let backgroundLines = [];
+let adminToken = '';
 
 if (window.location.hash) {
   history.replaceState(null, '', window.location.pathname);
@@ -183,8 +183,45 @@ const passwordInput = $('#passwordInput');
 const loginMessage = $('#loginMessage');
 const saveToast = $('#saveToast');
 
-function savePortfolio() {
+async function loadPortfolioFromApi() {
+  try {
+    const response = await fetch('/api/portfolio');
+
+    if (!response.ok) {
+      throw new Error('No se pudo cargar el portafolio.');
+    }
+
+    const data = await response.json();
+
+    if (data.portfolio) {
+      portfolio = hydratePortfolio(data.portfolio);
+      localStorage.setItem(storageKey, JSON.stringify(portfolio));
+    }
+  } catch (error) {
+    console.warn(error.message);
+  }
+}
+
+async function savePortfolio() {
   localStorage.setItem(storageKey, JSON.stringify(portfolio));
+
+  if (!adminToken) {
+    return;
+  }
+
+  const response = await fetch('/api/portfolio', {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${adminToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(portfolio)
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'No se pudo guardar en la base de datos.');
+  }
 }
 
 function hydratePortfolio(savedPortfolio) {
@@ -764,7 +801,8 @@ function closeEditModal() {
   editorModal.classList.remove('grid');
 }
 
-function showSaveToast() {
+function showSaveToast(message = 'Cambios realizados') {
+  saveToast.textContent = message;
   saveToast.classList.remove('hidden', 'opacity-0', '-translate-x-6', 'translate-y-4');
   saveToast.classList.add('opacity-100', 'translate-x-0', 'translate-y-0');
 
@@ -777,18 +815,32 @@ function showSaveToast() {
   }, 2600);
 }
 
-loginForm.addEventListener('submit', (event) => {
+loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+  loginMessage.textContent = '';
 
-  if (passwordInput.value === password) {
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: passwordInput.value })
+    });
+
+    if (!response.ok) {
+      throw new Error('Contraseña incorrecta.');
+    }
+
+    const data = await response.json();
+    adminToken = data.token;
     canEdit = true;
     editMode = true;
     activeEditor = '';
-    loginMessage.textContent = '';
     closeEditModal();
     renderPortfolio();
-  } else {
-    loginMessage.textContent = 'Contraseña incorrecta.';
+  } catch (error) {
+    loginMessage.textContent = error.message;
   }
 });
 
@@ -973,10 +1025,15 @@ function addUniqueItem(items, value) {
   }
 }
 
-function persistAndRender() {
-  savePortfolio();
+async function persistAndRender() {
   renderPortfolio();
-  showSaveToast();
+
+  try {
+    await savePortfolio();
+    showSaveToast();
+  } catch (error) {
+    showSaveToast(error.message);
+  }
 }
 
 $$('.tabButton').forEach((button) => {
@@ -997,5 +1054,6 @@ applyTheme();
 createBackgroundLines();
 drawBackground();
 animateHeroCard();
+await loadPortfolioFromApi();
 renderPortfolio();
 startScrollAnimations();

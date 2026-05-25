@@ -11,7 +11,9 @@
     "dev": "npm run build:css && node --watch server.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "mongoose": "^8.24.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.19"

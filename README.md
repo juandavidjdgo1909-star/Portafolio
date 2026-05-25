@@ -15,15 +15,28 @@ Luego abre:
 http://localhost:3000
 ```
 
+## Variables de entorno
+
+Copia `.env.example` como `.env` y configura:
+
+```text
+MONGODB_URI=tu_uri_de_mongodb_atlas
+MONGODB_DB=portafolio
+ADMIN_PASSWORD=tu_contrasena_de_editor
+PORT=3000
+```
+
+En el dominio/hosting agrega esas mismas variables en el panel de configuracion.
+
 ## Editar contenido
 
 Usa el boton `Editar` en la parte superior. La contraseña es:
 
 ```text
-65771344
+La que pongas en ADMIN_PASSWORD
 ```
 
-Los cambios se guardan en el navegador con `localStorage`.
+Los cambios se guardan en MongoDB Atlas y se cargan igual en computador y celular. El navegador mantiene una copia local solo como respaldo temporal.
 
 ## TailwindCSS
 
