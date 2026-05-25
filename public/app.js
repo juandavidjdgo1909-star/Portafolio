@@ -117,7 +117,7 @@ const defaultPortfolio = {
   customContacts: []
 };
 
-let portfolio = hydratePortfolio(JSON.parse(localStorage.getItem(storageKey)) || {});
+let portfolio = hydratePortfolio({});
 let activeTab = 'progress';
 let canEdit = false;
 let editMode = false;
@@ -188,7 +188,8 @@ async function loadPortfolioFromApi() {
     const response = await fetch('/api/portfolio');
 
     if (!response.ok) {
-      throw new Error('No se pudo cargar el portafolio.');
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || 'No se pudo cargar el portafolio desde la base de datos.');
     }
 
     const data = await response.json();
@@ -196,17 +197,18 @@ async function loadPortfolioFromApi() {
     if (data.portfolio) {
       portfolio = hydratePortfolio(data.portfolio);
       localStorage.setItem(storageKey, JSON.stringify(portfolio));
+    } else {
+      localStorage.removeItem(storageKey);
     }
   } catch (error) {
     console.warn(error.message);
+    showSaveToast('No hay conexión con la base de datos.');
   }
 }
 
 async function savePortfolio() {
-  localStorage.setItem(storageKey, JSON.stringify(portfolio));
-
   if (!adminToken) {
-    return;
+    throw new Error('Inicia sesión para guardar en la base de datos.');
   }
 
   const response = await fetch('/api/portfolio', {
@@ -222,6 +224,10 @@ async function savePortfolio() {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.message || 'No se pudo guardar en la base de datos.');
   }
+
+  const data = await response.json();
+  portfolio = hydratePortfolio(data.portfolio || portfolio);
+  localStorage.setItem(storageKey, JSON.stringify(portfolio));
 }
 
 function hydratePortfolio(savedPortfolio) {
@@ -844,7 +850,7 @@ loginForm.addEventListener('submit', async (event) => {
   }
 });
 
-document.addEventListener('click', (event) => {
+document.addEventListener('click', async (event) => {
   const editTrigger = event.target.closest('[data-editor]');
   const cancelTrigger = event.target.closest('[data-cancel-editor]');
   const deleteProjectTrigger = event.target.closest('[data-delete-project]');
@@ -861,21 +867,23 @@ document.addEventListener('click', (event) => {
   }
 
   if (deleteProjectTrigger) {
+    const previousPortfolio = structuredClone(portfolio);
     const [tab, indexText] = deleteProjectTrigger.dataset.deleteProject.split(':');
     const projects = tab === 'progress' ? portfolio.projectsInProgress : portfolio.projectsDone;
     projects.splice(Number(indexText), 1);
     activeEditor = '';
-    persistAndRender();
+    await persistAndRender(previousPortfolio);
   }
 
   if (deleteContactTrigger) {
+    const previousPortfolio = structuredClone(portfolio);
     portfolio.customContacts.splice(Number(deleteContactTrigger.dataset.deleteContact), 1);
     activeEditor = '';
-    persistAndRender();
+    await persistAndRender(previousPortfolio);
   }
 });
 
-document.addEventListener('submit', (event) => {
+document.addEventListener('submit', async (event) => {
   const form = event.target.closest('.inlineForm');
 
   if (!form) {
@@ -883,10 +891,11 @@ document.addEventListener('submit', (event) => {
   }
 
   event.preventDefault();
-  saveInlineForm(form);
+  await saveInlineForm(form);
 });
 
-function saveInlineForm(form) {
+async function saveInlineForm(form) {
+  const previousPortfolio = structuredClone(portfolio);
   const data = new FormData(form);
   const formType = form.dataset.form;
 
@@ -939,7 +948,7 @@ function saveInlineForm(form) {
   }
 
   activeEditor = '';
-  persistAndRender();
+  await persistAndRender(previousPortfolio);
 }
 
 function saveCustomContactForm(form, data) {
@@ -1025,14 +1034,20 @@ function addUniqueItem(items, value) {
   }
 }
 
-async function persistAndRender() {
+async function persistAndRender(previousPortfolio) {
   renderPortfolio();
 
   try {
     await savePortfolio();
+    renderPortfolio();
     showSaveToast();
   } catch (error) {
-    showSaveToast(error.message);
+    if (previousPortfolio) {
+      portfolio = previousPortfolio;
+      renderPortfolio();
+    }
+
+    showSaveToast(`No se guardó: ${error.message}`);
   }
 }
 

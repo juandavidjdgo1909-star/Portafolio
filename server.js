@@ -32,6 +32,11 @@ const Portfolio = mongoose.model('Portfolio', portfolioSchema);
 
 app.use(express.json({ limit: '1mb' }));
 
+app.use('/api', (_request, response, next) => {
+  response.set('Cache-Control', 'no-store');
+  next();
+});
+
 if (!process.env.MONGODB_URI) {
   console.warn('MONGODB_URI no está configurada. La API de portafolio responderá como no disponible.');
 } else {
@@ -93,7 +98,10 @@ app.post('/api/login', (request, response) => {
 app.get('/api/portfolio', requireDatabase, async (_request, response) => {
   const document = await Portfolio.findOne({ slug: portfolioSlug }).lean();
 
-  response.json({ portfolio: document?.data || null });
+  response.json({
+    portfolio: document?.data || null,
+    updatedAt: document?.updatedAt || null
+  });
 });
 
 app.put('/api/portfolio', requireDatabase, requireEditorToken, async (request, response) => {
@@ -108,10 +116,23 @@ app.put('/api/portfolio', requireDatabase, requireEditorToken, async (request, r
     { new: true, upsert: true }
   ).lean();
 
-  response.json({ portfolio: document.data });
+  response.json({
+    portfolio: document.data,
+    updatedAt: document.updatedAt
+  });
 });
 
-app.use(express.static('public'));
+app.get('/', (_request, response, next) => {
+  response.set('Cache-Control', 'no-store');
+  next();
+});
+
+app.use(express.static('public', {
+  etag: false,
+  setHeaders(response) {
+    response.set('Cache-Control', 'no-store');
+  }
+}));
 
 app.listen(port, () => {
   console.log(`Portafolio listo en http://localhost:${port}`);
