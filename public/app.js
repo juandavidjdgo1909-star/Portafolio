@@ -511,7 +511,7 @@ function profileForm() {
         ${field('role', 'Rol', portfolio.profile.role)}
         ${field('avatar', 'Avatar', portfolio.profile.avatar, 'text', '2')}
       </div>
-      ${field('image', 'Imagen principal', portfolio.profile.image)}
+      ${imageUploadField('image', 'Imagen principal', portfolio.profile.image)}
       ${textareaField('intro', 'Introducción', portfolio.profile.intro)}
       ${formActions()}
     </form>
@@ -604,7 +604,7 @@ function projectForm(mode, tab, index = -1) {
       </div>
       ${textareaField('description', 'Descripción', project.description)}
       ${field('link', 'Link', project.link)}
-      ${field('image', 'Imagen del proyecto', project.image || './img/project-laptop.jpg')}
+      ${imageUploadField('image', 'Imagen del proyecto', project.image || './img/project-laptop.jpg')}
       ${formActions(mode === 'edit' ? 'Guardar proyecto' : 'Añadir proyecto')}
     </form>
   `;
@@ -661,6 +661,21 @@ function textareaField(name, label, value, extraClass = 'min-h-24') {
   `;
 }
 
+function imageUploadField(name, label, value) {
+  const preview = safeUrl(value || './img/project-laptop.jpg');
+
+  return `
+    <label class="grid gap-2 font-bold">
+      ${label}
+      <input name="${name}" type="hidden" value="${escapeHtml(value)}" />
+      <div class="grid gap-3 rounded-xl border border-slate-300 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+        <img class="h-40 w-full rounded-xl object-cover" src="${preview}" alt="${escapeHtml(label)}" />
+        <input class="inlineInput" name="${name}File" type="file" accept="image/*" />
+      </div>
+    </label>
+  `;
+}
+
 function formActions(label = 'Guardar') {
   return `
     <div class="flex flex-wrap gap-2">
@@ -686,6 +701,10 @@ function safeUrl(value) {
   }
 
   if (url.startsWith('./') || url.startsWith('/') || url.startsWith('#')) {
+    return url;
+  }
+
+  if (url.startsWith('data:image/')) {
     return url;
   }
 
@@ -883,6 +902,20 @@ document.addEventListener('click', async (event) => {
   }
 });
 
+document.addEventListener('change', (event) => {
+  const input = event.target.closest('input[type="file"][name$="File"]');
+
+  if (!input || !input.files?.length) {
+    return;
+  }
+
+  const preview = input.closest('label')?.querySelector('img');
+
+  if (preview) {
+    preview.src = URL.createObjectURL(input.files[0]);
+  }
+});
+
 document.addEventListener('submit', async (event) => {
   const form = event.target.closest('.inlineForm');
 
@@ -891,7 +924,12 @@ document.addEventListener('submit', async (event) => {
   }
 
   event.preventDefault();
-  await saveInlineForm(form);
+
+  try {
+    await saveInlineForm(form);
+  } catch (error) {
+    showSaveToast(error.message);
+  }
 });
 
 async function saveInlineForm(form) {
@@ -903,7 +941,7 @@ async function saveInlineForm(form) {
     portfolio.profile.name = data.get('name').trim() || 'Juan';
     portfolio.profile.role = data.get('role').trim() || 'Desarrollador en formación';
     portfolio.profile.avatar = data.get('avatar').trim() || 'J';
-    portfolio.profile.image = data.get('image').trim() || './img/hero-workspace.jpg';
+    portfolio.profile.image = await imageFromForm(data, 'image', './img/hero-workspace.jpg');
     portfolio.profile.intro = data.get('intro').trim();
   }
 
@@ -932,7 +970,7 @@ async function saveInlineForm(form) {
   }
 
   if (formType === 'project') {
-    saveProjectForm(form, data);
+    await saveProjectForm(form, data);
   }
 
   if (formType === 'contact') {
@@ -1002,13 +1040,13 @@ function saveSiteText(data) {
   portfolio.content.footer = data.get('footer').trim();
 }
 
-function saveProjectForm(form, data) {
+async function saveProjectForm(form, data) {
   const project = {
     title: data.get('title').trim() || 'Proyecto',
     description: data.get('description').trim() || 'Descripción del proyecto.',
     tech: data.get('tech').trim() || 'Tecnologías',
     link: data.get('link').trim() || '#',
-    image: data.get('image').trim() || './img/project-laptop.jpg'
+    image: await imageFromForm(data, 'image', './img/project-laptop.jpg')
   };
   const projects = form.dataset.tab === 'progress' ? portfolio.projectsInProgress : portfolio.projectsDone;
 
@@ -1017,6 +1055,67 @@ function saveProjectForm(form, data) {
   } else {
     projects.push(project);
   }
+}
+
+async function imageFromForm(data, name, fallback) {
+  const file = data.get(`${name}File`);
+
+  if (file && file.size > 0) {
+    return fileToOptimizedImage(file);
+  }
+
+  return data.get(name).trim() || fallback;
+}
+
+async function fileToOptimizedImage(file) {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Selecciona un archivo de imagen válido.');
+  }
+
+  if (file.type === 'image/svg+xml') {
+    return fileToDataUrl(file);
+  }
+
+  const image = await loadImage(file);
+  const maxSize = 1400;
+  const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  canvas.width = width;
+  canvas.height = height;
+  context.drawImage(image, 0, 0, width, height);
+
+  return canvas.toDataURL('image/jpeg', 0.82);
+}
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('No se pudo leer la imagen seleccionada.'));
+    };
+    image.src = url;
+  });
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('No se pudo leer la imagen seleccionada.'));
+    reader.readAsDataURL(file);
+  });
 }
 
 function linesToItems(value) {

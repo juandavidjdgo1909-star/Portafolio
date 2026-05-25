@@ -30,7 +30,7 @@ const portfolioSchema = new mongoose.Schema(
 
 const Portfolio = mongoose.model('Portfolio', portfolioSchema);
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '8mb' }));
 
 app.use('/api', (_request, response, next) => {
   response.set('Cache-Control', 'no-store');
@@ -105,21 +105,35 @@ app.get('/api/portfolio', requireDatabase, async (_request, response) => {
 });
 
 app.put('/api/portfolio', requireDatabase, requireEditorToken, async (request, response) => {
-  if (!request.body || typeof request.body !== 'object' || Array.isArray(request.body)) {
-    response.status(400).json({ message: 'Contenido inválido.' });
+  try {
+    if (!request.body || typeof request.body !== 'object' || Array.isArray(request.body)) {
+      response.status(400).json({ message: 'Contenido inválido.' });
+      return;
+    }
+
+    const document = await Portfolio.findOneAndUpdate(
+      { slug: portfolioSlug },
+      { $set: { data: request.body } },
+      { new: true, upsert: true }
+    ).lean();
+
+    response.json({
+      portfolio: document.data,
+      updatedAt: document.updatedAt
+    });
+  } catch (error) {
+    console.error('Error guardando portafolio:', error.message);
+    response.status(500).json({ message: 'MongoDB no pudo guardar los cambios.' });
+  }
+});
+
+app.use((error, _request, response, next) => {
+  if (error.type === 'entity.too.large') {
+    response.status(413).json({ message: 'La imagen es demasiado pesada. Usa una foto más liviana.' });
     return;
   }
 
-  const document = await Portfolio.findOneAndUpdate(
-    { slug: portfolioSlug },
-    { $set: { data: request.body } },
-    { new: true, upsert: true }
-  ).lean();
-
-  response.json({
-    portfolio: document.data,
-    updatedAt: document.updatedAt
-  });
+  next(error);
 });
 
 app.get('/', (_request, response, next) => {
