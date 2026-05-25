@@ -10,7 +10,6 @@ const port = process.env.PORT || 3000;
 const adminPassword = process.env.ADMIN_PASSWORD || '65771344';
 const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL;
 const portfolioSlug = 'main';
-const editTokens = new Set();
 let databaseError = '';
 let databaseConnectionPromise = null;
 
@@ -117,12 +116,52 @@ async function requireDatabase(_request, response, next) {
 function requireEditorToken(request, response, next) {
   const token = request.headers.authorization?.replace('Bearer ', '');
 
-  if (!token || !editTokens.has(token)) {
+  if (!isValidEditorToken(token)) {
     response.status(401).json({ message: 'No autorizado.' });
     return;
   }
 
   next();
+}
+
+function createEditorToken() {
+  const expiresAt = Date.now() + 1000 * 60 * 60 * 12;
+  const payload = Buffer.from(JSON.stringify({ expiresAt })).toString('base64url');
+  const signature = crypto
+    .createHmac('sha256', adminPassword)
+    .update(payload)
+    .digest('base64url');
+
+  return `${payload}.${signature}`;
+}
+
+function isValidEditorToken(token) {
+  if (!token || !token.includes('.')) {
+    return false;
+  }
+
+  const [payload, signature] = token.split('.');
+  const expectedSignature = crypto
+    .createHmac('sha256', adminPassword)
+    .update(payload)
+    .digest('base64url');
+
+  const signatureBuffer = Buffer.from(signature);
+  const expectedSignatureBuffer = Buffer.from(expectedSignature);
+
+  if (
+    signatureBuffer.length !== expectedSignatureBuffer.length ||
+    !crypto.timingSafeEqual(signatureBuffer, expectedSignatureBuffer)
+  ) {
+    return false;
+  }
+
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return Number(data.expiresAt) > Date.now();
+  } catch {
+    return false;
+  }
 }
 
 app.get('/api/health', (_request, response) => {
@@ -139,9 +178,7 @@ app.post('/api/login', (request, response) => {
     return;
   }
 
-  const token = crypto.randomBytes(32).toString('hex');
-  editTokens.add(token);
-  response.json({ token });
+  response.json({ token: createEditorToken() });
 });
 
 app.get('/api/portfolio', requireDatabase, async (_request, response) => {
