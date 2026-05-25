@@ -10,6 +10,8 @@ const port = process.env.PORT || 3000;
 const adminPassword = process.env.ADMIN_PASSWORD || '65771344';
 const portfolioSlug = 'main';
 const editTokens = new Set();
+let databaseError = '';
+let databaseConnectionPromise = null;
 
 const portfolioSchema = new mongoose.Schema(
   {
@@ -37,29 +39,73 @@ app.use('/api', (_request, response, next) => {
   next();
 });
 
-if (!process.env.MONGODB_URI) {
-  console.warn('MONGODB_URI no está configurada. La API de portafolio responderá como no disponible.');
-} else {
-  mongoose
-    .connect(process.env.MONGODB_URI, {
-      dbName: process.env.MONGODB_DB || 'portafolio',
-      serverSelectionTimeoutMS: 10000
-    })
-    .then(() => {
-      console.log('MongoDB conectado.');
-    })
-    .catch((error) => {
-      console.error('No se pudo conectar MongoDB:', error.message);
-    });
-}
+connectDatabase();
 
 function isDatabaseReady() {
   return mongoose.connection.readyState === 1;
 }
 
-function requireDatabase(_request, response, next) {
+function getDatabaseStatus() {
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+
+  return {
+    connected: isDatabaseReady(),
+    state: states[mongoose.connection.readyState] || 'unknown',
+    hasUri: Boolean(process.env.MONGODB_URI),
+    dbName: process.env.MONGODB_DB || 'portafolio',
+    error: databaseError || null
+  };
+}
+
+function connectDatabase() {
+  if (!process.env.MONGODB_URI) {
+    databaseError = 'MONGODB_URI no está configurada en las variables de entorno.';
+    console.warn(databaseError);
+    return Promise.resolve(false);
+  }
+
+  if (isDatabaseReady()) {
+    databaseError = '';
+    return Promise.resolve(true);
+  }
+
+  if (databaseConnectionPromise) {
+    return databaseConnectionPromise;
+  }
+
+  databaseError = 'Conectando con MongoDB Atlas...';
+  databaseConnectionPromise = mongoose
+    .connect(process.env.MONGODB_URI, {
+      dbName: process.env.MONGODB_DB || 'portafolio',
+      serverSelectionTimeoutMS: 10000
+    })
+    .then(() => {
+      databaseError = '';
+      console.log('MongoDB conectado.');
+      return true;
+    })
+    .catch((error) => {
+      databaseError = error.message;
+      console.error('No se pudo conectar MongoDB:', error.message);
+      return false;
+    })
+    .finally(() => {
+      databaseConnectionPromise = null;
+    });
+
+  return databaseConnectionPromise;
+}
+
+async function requireDatabase(_request, response, next) {
   if (!isDatabaseReady()) {
-    response.status(503).json({ message: 'La base de datos no está disponible.' });
+    await connectDatabase();
+  }
+
+  if (!isDatabaseReady()) {
+    response.status(503).json({
+      message: 'La base de datos no está disponible.',
+      database: getDatabaseStatus()
+    });
     return;
   }
 
@@ -80,7 +126,8 @@ function requireEditorToken(request, response, next) {
 app.get('/api/health', (_request, response) => {
   response.json({
     ok: true,
-    database: isDatabaseReady() ? 'connected' : 'unavailable'
+    database: isDatabaseReady() ? 'connected' : 'unavailable',
+    details: getDatabaseStatus()
   });
 });
 

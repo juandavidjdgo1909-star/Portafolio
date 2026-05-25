@@ -222,7 +222,7 @@ async function savePortfolio() {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'No se pudo guardar en la base de datos.');
+    throw new Error(getApiErrorMessage(error, 'No se pudo guardar en la base de datos.'));
   }
 
   const data = await response.json();
@@ -232,6 +232,14 @@ async function savePortfolio() {
 
 function hydratePortfolio(savedPortfolio) {
   return deepMerge(structuredClone(defaultPortfolio), savedPortfolio);
+}
+
+function getApiErrorMessage(error, fallback) {
+  if (error?.database?.error) {
+    return error.database.error;
+  }
+
+  return error?.message || fallback;
 }
 
 function deepMerge(target, source) {
